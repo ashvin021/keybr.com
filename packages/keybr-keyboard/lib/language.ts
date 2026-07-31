@@ -170,6 +170,12 @@ export class Language implements EnumItem {
     /* direction= */ "ltr",
     /* alphabet= */ "абвгдежзийклмнопрстуфхцчшщъыьэюя",
   );
+  static readonly SI = new Language(
+    /* id= */ "si",
+    /* script= */ "sinhala",
+    /* direction= */ "ltr",
+    /* alphabet= */ "අආඇඈඉඊඋඌඍඑඒඓඔඕඖංඃකඛගඝඞඟචඡජඣඤඥඦටඨඩඪණඬතථදධනඳපඵබභමඹයරලවශෂසහළෆ්ාැෑිීුූෘෲෳෙේෛොෝෞෟ",
+  );
   static readonly SL = new Language(
     /* id= */ "sl",
     /* script= */ "latin",
@@ -236,6 +242,7 @@ export class Language implements EnumItem {
     Language.PT,
     Language.RO,
     Language.RU,
+    Language.SI,
     Language.SL,
     Language.SV,
     Language.TH,
@@ -255,6 +262,7 @@ export class Language implements EnumItem {
     | "hebrew"
     | "hiragana"
     | "latin"
+    | "sinhala"
     | "thai";
   /** The direction of the writing system, either "ltr" for left-to-right, or "rtl" for right-to-left. */
   readonly direction: "ltr" | "rtl";
@@ -283,6 +291,7 @@ export class Language implements EnumItem {
       | "hebrew"
       | "hiragana"
       | "latin"
+      | "sinhala"
       | "thai",
     direction: "ltr" | "rtl",
     alphabet: string,
@@ -344,6 +353,20 @@ export class Language implements EnumItem {
         codePoint,
       );
     }
+    if (codePoint >= 0x0d80 && codePoint <= 0x0dff) {
+      // Sinhala Unicode block.
+      if ((codePoint > 0x0dca && codePoint <= 0x0ddf) || codePoint === 0x0df2) {
+        // Some characters are diacritics, so we break them apart using
+        // the Zero Width Non-Joiner character.
+        return String.fromCodePoint(
+          /* ZERO WIDTH NON-JOINER */ 0x200c,
+          codePoint,
+        );
+      } else {
+        // There are no lower or uppercase letters in the Sinhala script.
+        return String.fromCodePoint(codePoint);
+      }
+    }
     if (codePoint >= 0x0e00 && codePoint <= 0x0e7f) {
       // Thai Unicode block.
       if (
@@ -391,6 +414,8 @@ export class Language implements EnumItem {
           (codePoint >= /* "Ā" */ 0x0100 && codePoint <= /* "ſ" */ 0x017f) ||
           (codePoint >= /* "ƀ" */ 0x0180 && codePoint <= /* "ɏ" */ 0x024f)
         );
+      case "sinhala":
+        return codePoint >= 0x0d80 && codePoint <= 0x0dff;
       case "thai":
         return codePoint >= 0x0e00 && codePoint <= 0x0e7f;
       default:
@@ -423,6 +448,8 @@ export function getExampleText({ script }: Language): string {
       return "リンゴとオレンジをもっと食べましょう。";
     case "latin":
       return "Eat more apples and oranges.";
+    case "sinhala":
+      return "තව ඇපල් හා දොඩං කන්න.";
     case "thai":
       return "กินส้มกับแอปเปิลเยอะ ๆ";
   }
@@ -444,6 +471,8 @@ export function getExampleLetters({ script }: Language): CodePoint[] {
       return [0x3041, 0x3043, 0x3045, 0x3047, 0x3049, 0x304b];
     case "latin":
       return [0x0061, 0x0062, 0x0063, 0x0064, 0x0065, 0x0066];
+    case "sinhala":
+      return [0x0d85, 0x0d86, 0x0d87, 0x0d88, 0x0d89, 0x0d8a];
     case "thai":
       return [0x0e01, 0x0e02, 0x0e04, 0x0e06, 0x0e07, 0x0e08];
   }

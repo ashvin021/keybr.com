@@ -629,6 +629,21 @@ export class Layout implements XEnumItem {
       Geometry.MATRIX,
     ),
   );
+  static readonly SI_LK = new Layout(
+    /* id= */ "si-lk",
+    /* xid= */ 0xbf,
+    /* name= */ "{LK} (Wij)",
+    /* family= */ "sinhala",
+    /* language= */ Language.SI,
+    /* emulate= */ false,
+    /* geometries= */ new Enum(
+      Geometry.ANSI_101,
+      Geometry.ANSI_101_FULL,
+      Geometry.ISO_102,
+      Geometry.ISO_102_FULL,
+      Geometry.MATRIX,
+    ),
+  );
   static readonly EL_GR = new Layout(
     /* id= */ "el-gr",
     /* xid= */ 0x83,
@@ -1510,6 +1525,7 @@ export class Layout implements XEnumItem {
     Layout.TH_PAT,
     Layout.TH_MAN,
     Layout.RO_RO,
+    Layout.SI_LK,
   );
 
   static findLayout(localeId: string): Layout | null {
